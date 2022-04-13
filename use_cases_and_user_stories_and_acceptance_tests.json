@@ -8,7 +8,11 @@
        {"short name": "miimmin1",
         "description": "mimimniinn"}
      ]},
-    {"short name": "anotehr"}
+    {"short name": "anotehr",
+      "user stories": [
+         {"short name": "mimiminininin"}
+       ]
+    }
   ],
   "acceptance tests": [
     {"short name": "asdf"},
@@ -33,8 +37,8 @@
   "acceptance-to-regression": [
     ["asdf", "asdf"]
   ],
-  "regressin-to-unit": [
-    ["asdf", "asdf"]
+  "regression-to-unit": [
+    ["asdf", "mimin123"]
   ]
 
 }
