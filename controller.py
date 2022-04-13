@@ -25,6 +25,13 @@ from pygraphviz import AGraph
 import random
 from typing import Tuple
 
+def write_to_file(folder_name: str,this_dict: dict,this_prefix: str) -> None:
+    """
+    >>> write_to_file()
+    """
+    with open(folder_name+"/"+this_prefix+this_dict['short name']+".json","w") as file_handle:
+        json.dump(this_dict,file_handle,indent=2)
+    return
 
 if __name__ == "__main__":
 
@@ -61,36 +68,26 @@ if __name__ == "__main__":
         # the prefixes are only relevant because I have duplicate node names in JSON
         uc_prefix = "use case:"
         use_cases.add_node(uc_prefix+this_use_case_dict['short name'])
-        if create_files:
-            with open(folder_name+"/use_case_"+this_use_case_dict['short name']+".json","w") as file_handle:
-                json.dump(this_use_case_dict,file_handle,indent=2)
+        if create_files: write_to_file(folder_name,this_use_case_dict,"use_case_")
         for this_user_story_dict in this_use_case_dict['user stories']:
             #print(this_user_story_dict)
             us_prefix = "user story:"
             user_stories.add_node(us_prefix+this_user_story_dict['short name'])
             all_the_things.add_edge(uc_prefix+this_use_case_dict['short name'],us_prefix+this_user_story_dict['short name'])
-            if create_files:
-                with open(folder_name+"/user_story_"+this_user_story_dict['short name']+".json","w") as file_handle:
-                    json.dump(this_user_story_dict,file_handle,indent=2)
+            if create_files: write_to_file(folder_name,this_user_story_dict,"user_story_")
 
     for this_acceptance_dict in data['acceptance tests']:
         acpt_prefix = "acpt:"
         acceptance.add_node(acpt_prefix+this_acceptance_dict['short name'])
-        if create_files:
-            with open(folder_name+"/acpt_"+this_acceptance_dict['short name']+".json","w") as file_handle:
-                json.dump(this_acceptance_dict,file_handle,indent=2)
+        if create_files: write_to_file(folder_name,this_acceptance_dict,"acpt_")
     for this_regression_dict in data['regression tests']:
         reg_prefix = "reg:"
         regression.add_node(reg_prefix+this_regression_dict['short name'])
-        if create_files:
-            with open(folder_name+"/reg_"+this_regression_dict['short name']+".json","w") as file_handle:
-                json.dump(this_regression_dict,file_handle,indent=2)
+        if create_files: write_to_file(folder_name,this_regression_dict,"reg_")
     for this_unit_dict in data['unit tests']:
         unit_prefix = "unit:"
         unit.add_node(unit_prefix+this_unit_dict['short name'])
-        if create_files:
-            with open(folder_name+"/unit_"+this_unit_dict['short name']+".json","w") as file_handle:
-                json.dump(this_unit_dict,file_handle,indent=2)
+        if create_files: write_to_file(folder_name,this_unit_dict,"unit_")
 
     for edge_us_acpt in data['user-story-to-acceptance']:
         all_the_things.add_edge(us_prefix+edge_us_acpt[0],acpt_prefix+edge_us_acpt[1])
