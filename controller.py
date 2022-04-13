@@ -44,12 +44,16 @@ def args_parser():
     theparser = argparse.ArgumentParser(description="generate Graphviz of use cases and user stories from JSON", allow_abbrev=False)
 
     theparser.add_argument(
-        "--input_filename",
+        "--input_filenames",
         metavar="<filename>",
         type=str,
-        default="use_cases_and_user_stories_and_acceptance_tests.json",
-        help="Name of input JSON file",
+        # https://stackoverflow.com/a/15753721/1164295
+        #action='append',
+        nargs="+",
+        default=["use_cases_and_user_stories_and_acceptance_tests.json"],
+        help="Name of input JSON file; can provide more than one (space separated)",
     )
+
 
     theparser.add_argument(
         "--no_output",
@@ -73,7 +77,7 @@ def args_parser():
 if __name__ == "__main__":
 
     args = args_parser()
-    #print(args)
+    print(args)
 
     if args.version:
         print("version: 1.0")
@@ -91,10 +95,6 @@ if __name__ == "__main__":
     if create_files:
         if not os.path.exists(folder_name):
             os.mkdir(folder_name)
-
-    with open(args.input_filename, "r") as file_handle:
-        data = json.load(file_handle)
-    # print(json.dumps(data,indent=4))
 
     # initialize graphviz data structure
     all_the_things = AGraph(directed=True)
@@ -114,72 +114,80 @@ if __name__ == "__main__":
     )
     unit = all_the_things.subgraph(name="cluster_unit", label="unit tests")
 
-    # print(data.keys())
 
-    for this_use_case_dict in data["use cases"]:
-        # print(this_use_case_dict['short name'])
-        # print(this_use_case_dict)
+    for this_input_file in args.input_filenames:
+        # caveat: node names need to be unique across all JSON files
 
-        # the prefixes are only relevant because I have duplicate node names in JSON
-        uc_prefix = "use case:"
-        uc_filename_prefix="use_case_"
-        use_cases.add_node(uc_prefix + this_use_case_dict["short name"],
-                        URL=folder_name+"/"+uc_filename_prefix+ this_use_case_dict["short name"]+".json",
-                        color="blue")
-        if create_files:
-            write_to_file(folder_name, this_use_case_dict, uc_filename_prefix)
+        with open(this_input_file, "r") as file_handle:
+            data = json.load(file_handle)
+        # print(json.dumps(data,indent=4))
 
-        for this_user_story_dict in this_use_case_dict["user stories"]:
-            # print(this_user_story_dict)
-            us_prefix = "user story:"
-            us_filename_prefix="user_story_"
-            user_stories.add_node(us_prefix + this_user_story_dict["short name"],
-                            URL=folder_name+"/"+us_filename_prefix+ this_user_story_dict["short name"]+".json",
+        # print(data.keys())
+
+        for this_use_case_dict in data["use cases"]:
+            # print(this_use_case_dict['short name'])
+            # print(this_use_case_dict)
+
+            # the prefixes are only relevant because I have duplicate node names in JSON
+            uc_prefix = "use case:"
+            uc_filename_prefix="use_case_"
+            use_cases.add_node(uc_prefix + this_use_case_dict["short name"],
+                            URL=folder_name+"/"+uc_filename_prefix+ this_use_case_dict["short name"]+".json",
                             color="blue")
-            all_the_things.add_edge(
-                uc_prefix + this_use_case_dict["short name"],
-                us_prefix + this_user_story_dict["short name"],
-            )
             if create_files:
-                write_to_file(folder_name, this_user_story_dict, us_filename_prefix)
+                write_to_file(folder_name, this_use_case_dict, uc_filename_prefix)
 
-    for this_acceptance_dict in data["acceptance tests"]:
-        acpt_prefix = "acpt:"
-        acpt_filename_prefix="acpt_"
-        acceptance.add_node(acpt_prefix + this_acceptance_dict["short name"],
-                        URL=folder_name+"/"+acpt_filename_prefix+ this_acceptance_dict["short name"]+".json",
-                        color="blue")
-        if create_files:
-            write_to_file(folder_name, this_acceptance_dict, acpt_filename_prefix)
-    for this_regression_dict in data["regression tests"]:
-        reg_prefix = "reg:"
-        reg_filename_prefix = "reg_"
-        regression.add_node(reg_prefix + this_regression_dict["short name"],
-                        URL=folder_name+"/"+reg_filename_prefix+ this_regression_dict["short name"]+".json",
-                        color="blue")
-        if create_files:
-            write_to_file(folder_name, this_regression_dict, reg_filename_prefix)
-    for this_unit_dict in data["unit tests"]:
-        unit_prefix = "unit:"
-        unit_filename_prefix = "unit_"
-        unit.add_node(unit_prefix + this_unit_dict["short name"],
-                        URL=folder_name+"/"+unit_filename_prefix+ this_unit_dict["short name"]+".json",
-                        color="blue")
-        if create_files:
-            write_to_file(folder_name, this_unit_dict, unit_filename_prefix)
+            for this_user_story_dict in this_use_case_dict["user stories"]:
+                # print(this_user_story_dict)
+                us_prefix = "user story:"
+                us_filename_prefix="user_story_"
+                user_stories.add_node(us_prefix + this_user_story_dict["short name"],
+                                URL=folder_name+"/"+us_filename_prefix+ this_user_story_dict["short name"]+".json",
+                                color="blue")
+                all_the_things.add_edge(
+                    uc_prefix + this_use_case_dict["short name"],
+                    us_prefix + this_user_story_dict["short name"],
+                )
+                if create_files:
+                    write_to_file(folder_name, this_user_story_dict, us_filename_prefix)
 
-    for edge_us_acpt in data["user-story-to-acceptance"]:
-        all_the_things.add_edge(
-            us_prefix + edge_us_acpt[0], acpt_prefix + edge_us_acpt[1]
-        )
-    for edge_acpt_reg in data["acceptance-to-regression"]:
-        all_the_things.add_edge(
-            acpt_prefix + edge_acpt_reg[0], reg_prefix + edge_acpt_reg[1]
-        )
-    for edge_reg_unit in data["regression-to-unit"]:
-        all_the_things.add_edge(
-            reg_prefix + edge_reg_unit[0], unit_prefix + edge_reg_unit[1]
-        )
+        for this_acceptance_dict in data["acceptance tests"]:
+            acpt_prefix = "acpt:"
+            acpt_filename_prefix="acpt_"
+            acceptance.add_node(acpt_prefix + this_acceptance_dict["short name"],
+                            URL=folder_name+"/"+acpt_filename_prefix+ this_acceptance_dict["short name"]+".json",
+                            color="blue")
+            if create_files:
+                write_to_file(folder_name, this_acceptance_dict, acpt_filename_prefix)
+        for this_regression_dict in data["regression tests"]:
+            reg_prefix = "reg:"
+            reg_filename_prefix = "reg_"
+            regression.add_node(reg_prefix + this_regression_dict["short name"],
+                            URL=folder_name+"/"+reg_filename_prefix+ this_regression_dict["short name"]+".json",
+                            color="blue")
+            if create_files:
+                write_to_file(folder_name, this_regression_dict, reg_filename_prefix)
+        for this_unit_dict in data["unit tests"]:
+            unit_prefix = "unit:"
+            unit_filename_prefix = "unit_"
+            unit.add_node(unit_prefix + this_unit_dict["short name"],
+                            URL=folder_name+"/"+unit_filename_prefix+ this_unit_dict["short name"]+".json",
+                            color="blue")
+            if create_files:
+                write_to_file(folder_name, this_unit_dict, unit_filename_prefix)
+
+        for edge_us_acpt in data["user-story-to-acceptance"]:
+            all_the_things.add_edge(
+                us_prefix + edge_us_acpt[0], acpt_prefix + edge_us_acpt[1]
+            )
+        for edge_acpt_reg in data["acceptance-to-regression"]:
+            all_the_things.add_edge(
+                acpt_prefix + edge_acpt_reg[0], reg_prefix + edge_acpt_reg[1]
+            )
+        for edge_reg_unit in data["regression-to-unit"]:
+            all_the_things.add_edge(
+                reg_prefix + edge_reg_unit[0], unit_prefix + edge_reg_unit[1]
+            )
 
     all_the_things.write("all_the_things.dot")
     all_the_things.draw("all_the_things.svg", format="svg", prog="dot")
