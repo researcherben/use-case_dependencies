@@ -1,0 +1,40 @@
+{
+  "use cases": [
+    {"short name": "this is fun",
+     "description": "minin",
+     "user stories": [
+       {"short name": "miminin0",
+        "description": "some workds"},
+       {"short name": "miimmin1",
+        "description": "mimimniinn"}
+     ]},
+    {"short name": "anotehr"}
+  ],
+  "acceptance tests": [
+    {"short name": "asdf"},
+    {"short name": "minin",
+     "status": "failed",
+     "test status date": "2022-04-12"}
+  ],
+  "regression tests": [
+    {"short name": "asdf",
+     "status": "passed",
+     "test status date": "2022-04-12"}
+  ],
+  "unit tests": [
+    {"short name": "mimin123",
+     "status": "passed",
+     "test status date": "2022-04-12"}
+  ],
+  "user-story-to-acceptance": [
+    ["miminin0", "asdf"],
+    ["miimmin1", "minin"]
+  ],
+  "acceptance-to-regression": [
+    ["asdf", "asdf"]
+  ],
+  "regressin-to-unit": [
+    ["asdf", "asdf"]
+  ]
+
+}

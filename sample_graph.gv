@@ -1,0 +1,41 @@
+digraph G {
+    rankdir=LR;
+  subgraph cluster_use_cases {
+    label = "use cases";
+    uc0 [label="question 1" URL="uc0.txt"];
+    uc1 [label="question 2"]; 
+    uc2 [label="question 3"];
+    uc3 [label="question 4"];
+  }
+
+  subgraph cluster_user_stories {
+    label = "user stories";
+    uc0_us0 [label="do this"];
+    uc0_us1 [label="and now for"];
+    uc1_us0 [label="something unexpected"];
+    uc1_us1 [label="how about"];
+    uc2_us0 [label="this one"];
+    uc3_us0 [label="maybe"];
+  }
+  uc0 -> uc0_us0;
+  uc0 -> uc0_us1;
+  uc1 -> uc1_us0;
+  uc1 -> uc1_us1;
+  uc2 -> uc2_us0;
+  uc3 -> uc3_us0;
+
+  subgraph cluster_acceptance_tests {
+    label = "acceptance tests"     
+    ac0 [label="nope"];
+    ac1 [label="try again"];
+    ac2 [label="how about now"];
+    ac3 [label="does it work"];
+  }
+   uc0_us0 -> ac0;
+    uc0_us1 -> ac1;
+    uc1_us0 -> ac2;
+    uc1_us1 -> ac3;
+    uc2_us0 -> ac0;
+    uc3_us0 -> ac1;  
+
+}
