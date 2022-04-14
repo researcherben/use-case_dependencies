@@ -6,4 +6,5 @@ purpose visualization of relation of use cases to regression tests, with the use
 
 * <https://dreampuf.github.io/GraphvizOnline/>
 * <https://jsoneditoronline.org/>
-
+* <https://www.liquid-technologies.com/online-json-to-schema-converter>
+* <https://json-schema.org/>

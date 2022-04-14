@@ -1,0 +1,242 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "use cases": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "short name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "user stories": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "short name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "short name",
+                    "description"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "short name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "short name",
+                    "description"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "short name",
+            "description",
+            "user stories"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "short name": {
+              "type": "string"
+            },
+            "user stories": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "short name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "short name"
+                  ]
+                }
+              ]
+            }
+          },
+          "required": [
+            "short name",
+            "user stories"
+          ]
+        }
+      ]
+    },
+    "acceptance tests": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "short name": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "short name"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "short name": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "test status date": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "short name",
+            "status",
+            "test status date"
+          ]
+        }
+      ]
+    },
+    "regression tests": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "short name": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "test status date": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "short name",
+            "status",
+            "test status date"
+          ]
+        }
+      ]
+    },
+    "unit tests": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "short name": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "test status date": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "short name",
+            "status",
+            "test status date"
+          ]
+        }
+      ]
+    },
+    "user-story-to-acceptance": {
+      "type": "array",
+      "items": [
+        {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "acceptance-to-regression": {
+      "type": "array",
+      "items": [
+        {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    },
+    "regression-to-unit": {
+      "type": "array",
+      "items": [
+        {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "use cases",
+    "acceptance tests",
+    "regression tests",
+    "unit tests",
+    "user-story-to-acceptance",
+    "acceptance-to-regression",
+    "regression-to-unit"
+  ]
+}
+
