@@ -54,6 +54,17 @@ def args_parser():
         help="Name of input JSON file; can provide more than one (space separated)",
     )
 
+    theparser.add_argument(
+        "--output_filename",
+        metavar="<filename>",
+        type=str,
+        # https://stackoverflow.com/a/15753721/1164295
+        #action='append',
+        nargs=1,
+        default=["all_the_things"],
+        help="Name of input JSON file",
+    )
+
 
     theparser.add_argument(
         "--no_output",
@@ -189,8 +200,8 @@ if __name__ == "__main__":
                 reg_prefix + edge_reg_unit[0], unit_prefix + edge_reg_unit[1]
             )
 
-    all_the_things.write("all_the_things.dot")
-    all_the_things.draw("all_the_things.svg", format="svg", prog="dot")
+    all_the_things.write(args.output_filename[0]+".dot")
+    all_the_things.draw( args.output_filename[0]+".svg", format="svg", prog="dot")
 
 
 # this isn't a long-running program, so I'm not using logging
