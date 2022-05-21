@@ -40,15 +40,19 @@ def write_to_file(folder_name: str, this_dict: dict, this_prefix: str) -> None:
         json.dump(this_dict, file_handle, indent=2)
     return
 
+
 def args_parser():
-    theparser = argparse.ArgumentParser(description="generate Graphviz of use cases and user stories from JSON", allow_abbrev=False)
+    theparser = argparse.ArgumentParser(
+        description="generate Graphviz of use cases and user stories from JSON",
+        allow_abbrev=False,
+    )
 
     theparser.add_argument(
         "--input_filenames",
         metavar="<filename>",
         type=str,
         # https://stackoverflow.com/a/15753721/1164295
-        #action='append',
+        # action='append',
         nargs="+",
         default=["use_cases_and_user_stories_and_acceptance_tests.json"],
         help="Name of input JSON file; can provide more than one (space separated)",
@@ -59,17 +63,14 @@ def args_parser():
         metavar="<filename>",
         type=str,
         # https://stackoverflow.com/a/15753721/1164295
-        #action='append',
+        # action='append',
         nargs=1,
         default=["all_the_things"],
         help="Name of input JSON file",
     )
 
-
     theparser.add_argument(
-        "--no_output",
-        action="store_true",
-        help="do not create files"
+        "--no_output", action="store_true", help="do not create files"
     )
     # even though this script is under version control in a git repo,
     # the --version is useful for when the code base is provided to
@@ -98,7 +99,7 @@ if __name__ == "__main__":
     # TODO: the color of top-level non-testable nodes should be set based on the color of lower nodes
 
     if args.no_output:
-        create_files =False
+        create_files = False
     else:
         create_files = True
 
@@ -125,7 +126,6 @@ if __name__ == "__main__":
     )
     unit = all_the_things.subgraph(name="cluster_unit", label="unit tests")
 
-
     for this_input_file in args.input_filenames:
         # caveat: node names need to be unique across all JSON files
 
@@ -141,20 +141,32 @@ if __name__ == "__main__":
 
             # the prefixes are only relevant because I have duplicate node names in JSON
             uc_prefix = "use case:"
-            uc_filename_prefix="use_case_"
-            use_cases.add_node(uc_prefix + this_use_case_dict["short name"],
-                            URL=folder_name+"/"+uc_filename_prefix+ this_use_case_dict["short name"]+".json",
-                            color="blue")
+            uc_filename_prefix = "use_case_"
+            use_cases.add_node(
+                uc_prefix + this_use_case_dict["short name"],
+                URL=folder_name
+                + "/"
+                + uc_filename_prefix
+                + this_use_case_dict["short name"]
+                + ".json",
+                color="blue",
+            )
             if create_files:
                 write_to_file(folder_name, this_use_case_dict, uc_filename_prefix)
 
             for this_user_story_dict in this_use_case_dict["user stories"]:
                 # print(this_user_story_dict)
                 us_prefix = "user story:"
-                us_filename_prefix="user_story_"
-                user_stories.add_node(us_prefix + this_user_story_dict["short name"],
-                                URL=folder_name+"/"+us_filename_prefix+ this_user_story_dict["short name"]+".json",
-                                color="blue")
+                us_filename_prefix = "user_story_"
+                user_stories.add_node(
+                    us_prefix + this_user_story_dict["short name"],
+                    URL=folder_name
+                    + "/"
+                    + us_filename_prefix
+                    + this_user_story_dict["short name"]
+                    + ".json",
+                    color="blue",
+                )
                 all_the_things.add_edge(
                     uc_prefix + this_use_case_dict["short name"],
                     us_prefix + this_user_story_dict["short name"],
@@ -164,26 +176,44 @@ if __name__ == "__main__":
 
         for this_acceptance_dict in data["acceptance tests"]:
             acpt_prefix = "acpt:"
-            acpt_filename_prefix="acpt_"
-            acceptance.add_node(acpt_prefix + this_acceptance_dict["short name"],
-                            URL=folder_name+"/"+acpt_filename_prefix+ this_acceptance_dict["short name"]+".json",
-                            color="blue")
+            acpt_filename_prefix = "acpt_"
+            acceptance.add_node(
+                acpt_prefix + this_acceptance_dict["short name"],
+                URL=folder_name
+                + "/"
+                + acpt_filename_prefix
+                + this_acceptance_dict["short name"]
+                + ".json",
+                color="blue",
+            )
             if create_files:
                 write_to_file(folder_name, this_acceptance_dict, acpt_filename_prefix)
         for this_regression_dict in data["regression tests"]:
             reg_prefix = "reg:"
             reg_filename_prefix = "reg_"
-            regression.add_node(reg_prefix + this_regression_dict["short name"],
-                            URL=folder_name+"/"+reg_filename_prefix+ this_regression_dict["short name"]+".json",
-                            color="blue")
+            regression.add_node(
+                reg_prefix + this_regression_dict["short name"],
+                URL=folder_name
+                + "/"
+                + reg_filename_prefix
+                + this_regression_dict["short name"]
+                + ".json",
+                color="blue",
+            )
             if create_files:
                 write_to_file(folder_name, this_regression_dict, reg_filename_prefix)
         for this_unit_dict in data["unit tests"]:
             unit_prefix = "unit:"
             unit_filename_prefix = "unit_"
-            unit.add_node(unit_prefix + this_unit_dict["short name"],
-                            URL=folder_name+"/"+unit_filename_prefix+ this_unit_dict["short name"]+".json",
-                            color="blue")
+            unit.add_node(
+                unit_prefix + this_unit_dict["short name"],
+                URL=folder_name
+                + "/"
+                + unit_filename_prefix
+                + this_unit_dict["short name"]
+                + ".json",
+                color="blue",
+            )
             if create_files:
                 write_to_file(folder_name, this_unit_dict, unit_filename_prefix)
 
@@ -200,8 +230,8 @@ if __name__ == "__main__":
                 reg_prefix + edge_reg_unit[0], unit_prefix + edge_reg_unit[1]
             )
 
-    all_the_things.write(args.output_filename[0]+".dot")
-    all_the_things.draw( args.output_filename[0]+".svg", format="svg", prog="dot")
+    all_the_things.write(args.output_filename[0] + ".dot")
+    all_the_things.draw(args.output_filename[0] + ".svg", format="svg", prog="dot")
 
 
 # this isn't a long-running program, so I'm not using logging

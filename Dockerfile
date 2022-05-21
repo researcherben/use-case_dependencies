@@ -10,16 +10,7 @@ FROM python:3.9-alpine
 
 RUN apk add --no-cache py3-pygraphviz graphviz graphviz-dev gcc musl-dev make
 
-
-# specify which files are required (rather than COPY . /opt)
-#COPY browse_internet.py \
-#     generate_graphviz.py \
-#     requirements.txt \
-#     Makefile \
-#     /opt/
-#WORKDIR /opt
-
-#RUN pip install -r requirements.txt
-RUN pip install pygraphviz
+COPY requirements.txt requirements.txt 
+RUN pip3 install -r requirements.txt
 
 WORKDIR /scratch
