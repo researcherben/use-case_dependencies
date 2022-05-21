@@ -22,7 +22,7 @@ from logging.handlers import RotatingFileHandler
 
 # need "pip install pygraphviz"
 # which requires a local installation of graphviz
-from pygraphviz import AGraph
+from pygraphviz import AGraph  # type: ignore
 
 # https://pygraphviz.github.io/documentation/stable/tutorial.html
 # https://pygraphviz.github.io/documentation/latest/reference/agraph.html
