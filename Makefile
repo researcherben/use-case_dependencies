@@ -30,7 +30,7 @@ docker_svg:
 	docker run --rm -v`pwd`:/scratch -w:/scratch $(mytag) python3 generate_graphviz.py
 
 clean:
-	rm -rf all_*.svg all_*.dot __pycache__ output/
+	rm -rf report.html all_*.svg all_*.dot __pycache__ output/
 
 svg:
 	python3 generate_graphviz.py
