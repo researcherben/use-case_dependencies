@@ -34,3 +34,9 @@ clean:
 
 svg:
 	python3 generate_graphviz.py
+
+black:
+	black generate_graphviz.py
+
+mypy:
+	mypy generate_graphviz.py

@@ -5,6 +5,15 @@
 # Attribution 4.0 International (CC BY 4.0)
 
 """
+example use:
+
+    $ python3 generate_graphviz.py
+
+    $ python3 generate_graphviz.py  --version
+    version: 1.0
+
+    $ python3 generate_graphviz.py  --input_filenames file1.json file2.json
+
 """
 
 import os
@@ -30,9 +39,11 @@ import random
 from typing import Tuple
 
 
-def write_to_file(folder_name: str, this_dict: dict, this_prefix: str) -> None:
+def write_snippet_to_JSON_file(
+    folder_name: str, this_dict: dict, this_prefix: str
+) -> None:
     """
-    >>> write_to_file()
+    >>> write_snippet_to_JSON_file()
     """
     with open(
         folder_name + "/" + this_prefix + this_dict["short name"] + ".json", "w"
@@ -85,29 +96,39 @@ def args_parser():
 
     return theparser.parse_args()
 
+def create_HTML() -> None:
+    """
+    JSON to HTML
 
-if __name__ == "__main__":
+    >>> create_HTML()
+    """
 
-    args = args_parser()
-    print(args)
+    with open("report.html",'w') as html_file_handle:
+        for this_input_file in args.input_filenames:
+            # caveat: node names need to be unique across all JSON files
 
-    if args.version:
-        print("version: 1.0")
-        exit(0)
+            with open(this_input_file, "r") as json_file_handle:
+                data = json.load(json_file_handle)
+            # print(json.dumps(data,indent=4))
 
-    # TODO: the color of testable nodes should be set by the result of the test
-    # TODO: the color of top-level non-testable nodes should be set based on the color of lower nodes
+            # print(data.keys())
 
-    if args.no_output:
-        create_files = False
-    else:
-        create_files = True
+            for this_use_case_dict in data["use cases"]:
+                #print(this_use_case_dict['short name'])
+                html_file_handle.write("  <H1>Use Case: "+this_use_case_dict['short name']+"</H1>\n")
+                if 'description' in this_use_case_dict.keys():
+                    html_file_handle.write("     Description:"+this_use_case_dict['description']+"<BR>\n")
+                for this_user_story_dict in this_use_case_dict['user stories']:
+                    html_file_handle.write("    <H3>User Story:"+this_user_story_dict['short name']+"</H3>\n")
+                    if 'description' in this_user_story_dict.keys():
+                        html_file_handle.write("    <P>Description:"+this_user_story_dict['description']+"<BR>\n")
 
-    folder_name = "output"
-    if create_files:
-        if not os.path.exists(folder_name):
-            os.mkdir(folder_name)
+    return
 
+def create_graphviz_svg() -> None:
+    """
+    >>> create_graphviz_svg
+    """
     # initialize graphviz data structure
     all_the_things = AGraph(directed=True)
     all_the_things.clear()
@@ -152,7 +173,9 @@ if __name__ == "__main__":
                 color="blue",
             )
             if create_files:
-                write_to_file(folder_name, this_use_case_dict, uc_filename_prefix)
+                write_snippet_to_JSON_file(
+                    folder_name, this_use_case_dict, uc_filename_prefix
+                )
 
             for this_user_story_dict in this_use_case_dict["user stories"]:
                 # print(this_user_story_dict)
@@ -172,7 +195,9 @@ if __name__ == "__main__":
                     us_prefix + this_user_story_dict["short name"],
                 )
                 if create_files:
-                    write_to_file(folder_name, this_user_story_dict, us_filename_prefix)
+                    write_snippet_to_JSON_file(
+                        folder_name, this_user_story_dict, us_filename_prefix
+                    )
 
         for this_acceptance_dict in data["acceptance tests"]:
             acpt_prefix = "acpt:"
@@ -187,7 +212,9 @@ if __name__ == "__main__":
                 color="blue",
             )
             if create_files:
-                write_to_file(folder_name, this_acceptance_dict, acpt_filename_prefix)
+                write_snippet_to_JSON_file(
+                    folder_name, this_acceptance_dict, acpt_filename_prefix
+                )
         for this_regression_dict in data["regression tests"]:
             reg_prefix = "reg:"
             reg_filename_prefix = "reg_"
@@ -201,7 +228,9 @@ if __name__ == "__main__":
                 color="blue",
             )
             if create_files:
-                write_to_file(folder_name, this_regression_dict, reg_filename_prefix)
+                write_snippet_to_JSON_file(
+                    folder_name, this_regression_dict, reg_filename_prefix
+                )
         for this_unit_dict in data["unit tests"]:
             unit_prefix = "unit:"
             unit_filename_prefix = "unit_"
@@ -215,7 +244,9 @@ if __name__ == "__main__":
                 color="blue",
             )
             if create_files:
-                write_to_file(folder_name, this_unit_dict, unit_filename_prefix)
+                write_snippet_to_JSON_file(
+                    folder_name, this_unit_dict, unit_filename_prefix
+                )
 
         for edge_us_acpt in data["user-story-to-acceptance"]:
             all_the_things.add_edge(
@@ -232,6 +263,34 @@ if __name__ == "__main__":
 
     all_the_things.write(args.output_filename[0] + ".dot")
     all_the_things.draw(args.output_filename[0] + ".svg", format="svg", prog="dot")
+
+    return
+
+if __name__ == "__main__":
+
+    args = args_parser()
+    # print(args)
+
+    if args.version:
+        print("version: 1.0")
+        exit(0)
+
+    # TODO: the color of testable nodes should be set by the result of the test
+    # TODO: the color of top-level non-testable nodes should be set based on the color of lower nodes
+
+    if args.no_output:
+        create_files = False
+    else:
+        create_files = True
+
+    folder_name = "output"
+    if create_files:
+        if not os.path.exists(folder_name):
+            os.mkdir(folder_name)
+
+    create_graphviz_svg()
+
+    create_HTML()
 
 
 # this isn't a long-running program, so I'm not using logging
